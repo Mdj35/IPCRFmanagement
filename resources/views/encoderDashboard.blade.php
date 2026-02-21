@@ -11,7 +11,14 @@
                 <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
                     <i data-lucide="file-text" class="w-6 h-6"></i>
                 </div>
-                <span class="text-xs font-medium bg-blue-50 text-blue-700 px-2 py-1 rounded-full">+12%</span>
+                <span class="text-xs font-medium px-2 py-1 rounded-full
+                    {{ $growthPercentage >= 0 
+                        ? 'bg-blue-50 text-blue-700' 
+                        : 'bg-red-50 text-red-700' }}">
+                    
+                    {{ $growthPercentage >= 0 ? '+' : '' }}
+                    {{ round($growthPercentage, 1) }}%
+                </span>
             </div>
             <h3 class="text-3xl font-bold text-slate-800">{{ $totalUploaded ?? 0 }}</h3>
             <p class="text-slate-500 text-sm">Total IPCRF Uploaded</p>

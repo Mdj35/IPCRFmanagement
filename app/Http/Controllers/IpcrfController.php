@@ -10,16 +10,36 @@ class IpcrfController extends Controller
 {
     public function index()
     {
-        // Stats for the dashboard
         $totalUploaded = Ipcrf::count();
-        $pendingReview = Ipcrf::where('status', 'Pending')->count();
-        $completedToday = Ipcrf::whereDate('created_at', today())->where('status', '!=', 'Pending')->count();
 
-        // Recent uploads
+        $pendingReview = Ipcrf::where('status', 'Pending')->count();
+
+        $completedToday = Ipcrf::whereDate('created_at', today())
+            ->where('status', '!=', 'Pending')
+            ->count();
+
         $recentUploads = Ipcrf::latest()->take(10)->get();
 
-        return view('encoderDashboard', compact('totalUploaded', 'pendingReview', 'completedToday', 'recentUploads'));
+        // 🔥 NEW: Calculate growth percentage (Today vs Yesterday)
+        $todayCount = Ipcrf::whereDate('created_at', today())->count();
+
+        $yesterdayCount = Ipcrf::whereDate('created_at', today()->subDay())->count();
+
+        if ($yesterdayCount > 0) {
+            $growthPercentage = (($todayCount - $yesterdayCount) / $yesterdayCount) * 100;
+        } else {
+            $growthPercentage = $todayCount > 0 ? 100 : 0;
+        }
+
+        return view('encoderDashboard', compact(
+            'totalUploaded',
+            'pendingReview',
+            'completedToday',
+            'recentUploads',
+            'growthPercentage'
+        ));
     }
+
 
 
     public function list()
@@ -43,7 +63,7 @@ class IpcrfController extends Controller
             ],
             [
                 'name' => "Davao del Sur",
-                'municipalities' => ["Bansalan", "Hagonoy", "Kiblawan", "Magsaysay", "Malalag", "Matanao", "Padada", "Santa Cruz", "Sulop"]
+                'municipalities' => ["Bansalan", "Davao City", "Hagonoy", "Kiblawan", "Magsaysay", "Malalag", "Matanao", "Padada", "Santa Cruz", "Sulop"]
             ],
             [
                 'name' => "Davao Occidental",
@@ -83,7 +103,7 @@ class IpcrfController extends Controller
         ]);
 
         // Simulate "Notify Admin" logic here (e.g., send email)
-        Mail::to('lorence.maranga@hcdc.edu.ph')->send(new IpcrfUploaded($ipcrf));
+        //Mail::to('lorence.maranga@hcdc.edu.ph')->send(new IpcrfUploaded($ipcrf));
 
         return redirect()->route('dashboard')->with('success', 'IPCRF uploaded successfully and Admin notified!');
     }
