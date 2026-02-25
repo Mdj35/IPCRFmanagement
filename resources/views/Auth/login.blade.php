@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DSWD - Purchase Request Tracking System - Login</title>
     <style>
@@ -438,33 +439,33 @@
                     <p>Sign in to your DSWD account to continue</p>
                 </div>
 
-               <form id="loginForm">
-    @csrf
-    
-    <div class="form-group">
-        <label for="employee_id">Employee ID</label>
-        <input type="text" id="employee_id" name="employee_id" required autofocus>
-    </div>
+               <form method="POST" action="{{ route('login.post') }}" id="loginForm">
+                    @csrf
+                    
+                    <div class="form-group">
+                        <label for="employee_id">Employee ID</label>
+                        <input type="text" id="employee_id" name="employee_id" required autofocus>
+                    </div>
 
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
-    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
 
-    <div class="form-options">
-        <div class="remember-me">
-            <input type="checkbox" id="remember" name="remember">
-            <label for="remember">Remember Me</label>
-        </div>
-        <a href="#" class="forgot-password">Forgot Password?</a>
-    </div>
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Remember Me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
 
-    <button type="submit" class="btn-primary">Sign In to System</button>
+                    <button type="submit" class="btn-primary">Sign In to System</button>
 
-    <div class="signup-prompt">
-        <p>Don't have an account? <a href="/register">SIGN UP</a></p>
-    </div>
-</form>
+                    <div class="signup-prompt">
+                        <p>Don't have an account? <a href="{{ route('register') }}">SIGN UP</a></p>
+                    </div>
+                </form>
                 <div class="divider">
                     <span>Need assistance ?</span>
                 </div>
@@ -485,17 +486,32 @@
     </div>
 
   <script>
+    // Load stored user info on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            try {
+                const user = JSON.parse(storedUser);
+                // Auto-fill employee ID if remember me was checked
+                if (user && user.employee_id) {
+                    document.getElementById('employee_id').value = user.employee_id;
+                    document.getElementById('remember').checked = true;
+                }
+            } catch (e) {
+                console.error('Error parsing stored user data:', e);
+            }
+        }
+    });
+
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
         // Show loading spinner
         document.getElementById('loadingOverlay').classList.add('active');
         
-        const formData = {
-            employee_id: document.getElementById('employee_id').value.trim(),
-            password: document.getElementById('password').value,
-            remember: document.getElementById('remember').checked
-        };
+        const employee_id = document.getElementById('employee_id').value.trim();
+        const password = document.getElementById('password').value;
+        const remember = document.getElementById('remember').checked;
 
         try {
             const response = await fetch('login.php', {
@@ -503,7 +519,10 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({
+                    employee_id: employee_id,
+                    password: password
+                })
             });
 
             const result = await response.json();
@@ -512,11 +531,30 @@
             document.getElementById('loadingOverlay').classList.remove('active');
 
             if (result.success) {
-                // Show success message briefly then redirect
-                alert('Login successful! Redirecting...');
+                // Save user data to localStorage
+                const userData = {
+                    employee_id: result.user.employee_id,
+                    name: result.user.name,
+                    firstname: result.user.firstname,
+                    lastname: result.user.lastname,
+                    email: result.user.email,
+                    role: result.user.role,
+                    timestamp: new Date().toISOString()
+                };
                 
-                // Redirect based on role
-                window.location.href = result.redirect;
+                if (remember) {
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    localStorage.setItem('rememberMe', 'true');
+                } else {
+                    sessionStorage.setItem('user', JSON.stringify(userData));
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('rememberMe');
+                }
+                
+                // Redirect based on response
+                setTimeout(() => {
+                    window.location.href = result.redirect;
+                }, 500);
             } else {
                 alert(result.message || 'Login failed. Please try again.');
             }
@@ -527,6 +565,26 @@
             console.error('Error:', error);
         }
     });
+
+    // Function to get stored user data
+    window.getStoredUser = function() {
+        const stored = localStorage.getItem('user') || sessionStorage.getItem('user');
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                return null;
+            }
+        }
+        return null;
+    };
+
+    // Function to clear stored user data
+    window.clearStoredUser = function() {
+        localStorage.removeItem('user');
+        localStorage.removeItem('rememberMe');
+        sessionStorage.removeItem('user');
+    };
 </script>
 </body>
 </html>

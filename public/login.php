@@ -46,30 +46,42 @@ try {
     $_SESSION['role'] = $user['role'];
     $_SESSION['firstname'] = $user['firstname'];
     $_SESSION['lastname'] = $user['lastname'];
+    $_SESSION['email'] = $user['email'];
     
     // Determine redirect URL based on role
-    $redirectUrl = '/dashboard'; // Default redirect
+    $redirectUrl = '/home'; // Default redirect
     
     switch($user['role']) {
         case 'encoder':
             $redirectUrl = '/encoder';
             break;
         case 'admin':
-            $redirectUrl = '/admin';
+            $redirectUrl = '/dashboard';
             break;
         case 'staff':
             $redirectUrl = '/home';
             break;
         case 'viewer':
-            $redirectUrl = '/viewer';
+            $redirectUrl = '/home';
             break;
+        default:
+            $redirectUrl = '/home';
     }
     
     echo json_encode([
         'success' => true, 
         'message' => 'Login successful!',
         'redirect' => $redirectUrl,
-        'role' => $user['role']
+        'role' => $user['role'],
+        'user' => [
+            'id' => $user['id'],
+            'employee_id' => $user['employee_id'],
+            'name' => $user['firstname'] . ' ' . $user['lastname'],
+            'firstname' => $user['firstname'],
+            'lastname' => $user['lastname'],
+            'email' => $user['email'],
+            'role' => $user['role']
+        ]
     ]);
     
 } catch (PDOException $e) {

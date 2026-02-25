@@ -25,9 +25,25 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // Mock authentication
-        Session::put('user', ['employee_id' => $request->username, 'role' => 'Administrator']);
-        return view('userDashboard');
+        // Check if user exists in database
+        $user = User::where('employee_id', $request->employee_id)->first();
+
+        if ($user && Hash::check($request->password, $user->password)) {
+            // Successful authentication
+            Session::put('user', [
+                'employee_id' => $user->employee_id,
+                'name' => $user->name,
+                'role' => $user->role,
+                'email' => $user->email,
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname
+            ]);
+
+            return redirect()->route('userDashboard');
+        }
+
+        // Failed authentication
+        return back()->withErrors(['employee_id' => 'Invalid credentials']);
     }
 
     public function showRegisterForm()

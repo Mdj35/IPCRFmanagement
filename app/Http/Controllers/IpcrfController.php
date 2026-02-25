@@ -92,7 +92,7 @@ class IpcrfController extends Controller
                 'status' => 'Saved to Drive',
             ]);
 
-            return redirect()->route('dashboard')->with('success', 'IPCRF uploaded successfully!');
+            return redirect()->route('dashboards')->with('success', 'IPCRF uploaded successfully!');
             
         } catch (\Exception $e) {
             return back()->with('error', 'Upload failed: ' . $e->getMessage())->withInput();
