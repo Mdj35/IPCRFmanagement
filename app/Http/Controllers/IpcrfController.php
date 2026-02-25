@@ -84,12 +84,10 @@ class IpcrfController extends Controller
             'province' => 'required|string',
             'municipality' => 'required|string',
             'name' => 'required|string|max:255',
-            'evaluated_file' => 'required|file|mimes:pdf,doc,docx|max:10240',
             'scanned_file' => 'required|file|mimes:pdf,jpg,png|max:10240',
         ]);
 
-        // Handle file uploads
-        $evaluatedPath = $request->file('evaluated_file')->store('ipcrfs/evaluated');
+        // Handle scanned upload only
         $scannedPath = $request->file('scanned_file')->store('ipcrfs/scanned');
 
         // Create the record
@@ -97,9 +95,8 @@ class IpcrfController extends Controller
             'name' => $validated['name'],
             'province' => $validated['province'],
             'municipality' => $validated['municipality'],
-            'evaluated_file_path' => $evaluatedPath,
             'scanned_file_path' => $scannedPath,
-            'status' => 'Saved to Drive', // Simulating the "Save to Google Drive" step
+            'status' => 'Saved to Drive',
         ]);
 
         // Simulate "Notify Admin" logic here (e.g., send email)

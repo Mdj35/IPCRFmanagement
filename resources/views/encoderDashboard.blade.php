@@ -54,7 +54,7 @@
         class="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium flex items-center gap-2 shadow-lg shadow-blue-600/30 transition-all duration-200 
         hover:bg-white hover:text-blue-600 hover:shadow-5xl hover:-translate-y-0.5 active:scale-95">
             <i data-lucide="plus" class="w-5 h-5"></i>
-            Upload New IPCRF
+            Upload Evaluated IPCRF
         </a>
     </div>
 

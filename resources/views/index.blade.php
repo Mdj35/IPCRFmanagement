@@ -6,20 +6,15 @@
 <div class="space-y-6">
     <div class="flex justify-between items-center">
         <h3 class="text-slate-800 font-bold text-lg">All Submissions</h3>
-        <a href="{{ route('upload.create') }}" 
-        class="bg-blue-600 text-white hover:bg-white hover:text-blue-600 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-            Add New
+        <a href="{{ route('upload.create') }}" class="bg-blue-600 text-white hover:bg-white hover:text-blue-600 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <i data-lucide="plus" class="w-4 h-4"></i> Add New
         </a>    
     </div>
-
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="p-4 border-b border-slate-200 flex gap-4">
             <div class="relative flex-1">
                 <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
-                <input 
-                    type="text" 
-                    placeholder="Search records..." 
+                <input type="text" placeholder="Search records..." 
                     class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 />
             </div>
