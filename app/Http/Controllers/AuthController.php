@@ -54,7 +54,7 @@ class AuthController extends Controller
         'name' => $request->firstname . ' ' . $request->lastname,
         'employee_id' => $request->employee_id,
         'email' => $request->employee_id . '@dswd.gov.ph',
-        'password' => bcrypt($request->password), // ← FIXED: Hash password
+        'password' => bcrypt($request->password),
         'role' => $request->role,
     ]);
 
@@ -64,9 +64,28 @@ class AuthController extends Controller
         'role' => $user->role
     ]);
 
-    return redirect()->route('dashboard'); // ← Use redirect, not view
+    return redirect()->back()->with('success', 'Registration successful! Welcome, ' . $user->name . '. You will be redirected shortly.');
 }
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'lastname' => 'required|string|max:100',
+        'firstname' => 'required|string|max:100',
+        'employee_id' => 'required|string|unique:users',
+        'password' => 'required|min:8|confirmed',
+        'role' => 'required|in:admin,staff,encoder,viewer'
+    ]);
 
+    User::create([
+        'lastname' => $validated['lastname'],
+        'firstname' => $validated['firstname'],
+        'employee_id' => $validated['employee_id'],
+        'password' => Hash::make($validated['password']),
+        'role' => $validated['role']
+    ]);
+
+    return redirect()->route('login')->with('success', 'Registration pending admin approval');
+}
 
     public function logout()
     {

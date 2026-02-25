@@ -438,34 +438,33 @@
                     <p>Sign in to your DSWD account to continue</p>
                 </div>
 
-                <form method="POST" action="{{ route('login.post') }}">
-                    @csrf
-                    
-                    <div class="form-group">
-                        <label for="employee_id">Employee ID</label>
-                        <input type="text" id="employee_id" name="employee_id" required autofocus>
-                    </div>
+               <form id="loginForm">
+    @csrf
+    
+    <div class="form-group">
+        <label for="employee_id">Employee ID</label>
+        <input type="text" id="employee_id" name="employee_id" required autofocus>
+    </div>
 
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required>
-                    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+    </div>
 
-                    <div class="form-options">
-                        <div class="remember-me">
-                            <input type="checkbox" id="remember" name="remember">
-                            <label for="remember">Remember Me</label>
-                        </div>
-                        <a href="{{ route('login') }}" class="forgot-password">Forgot Password?</a>
-                    </div>
+    <div class="form-options">
+        <div class="remember-me">
+            <input type="checkbox" id="remember" name="remember">
+            <label for="remember">Remember Me</label>
+        </div>
+        <a href="#" class="forgot-password">Forgot Password?</a>
+    </div>
 
-                    <button type="submit" class="btn-primary">Sign In to System</button>
+    <button type="submit" class="btn-primary">Sign In to System</button>
 
-                    <div class="signup-prompt">
-                        <p>Don't have an account? <a href="{{ route('register') }}">SIGN UP</a></p>
-                    </div>
-                </form>
-
+    <div class="signup-prompt">
+        <p>Don't have an account? <a href="/register">SIGN UP</a></p>
+    </div>
+</form>
                 <div class="divider">
                     <span>Need assistance ?</span>
                 </div>
@@ -485,10 +484,49 @@
         </div>
     </div>
 
-    <script>
-        document.querySelector('form').addEventListener('submit', function() {
-            document.getElementById('loadingOverlay').classList.add('active');
-        });
-    </script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Show loading spinner
+        document.getElementById('loadingOverlay').classList.add('active');
+        
+        const formData = {
+            employee_id: document.getElementById('employee_id').value.trim(),
+            password: document.getElementById('password').value,
+            remember: document.getElementById('remember').checked
+        };
+
+        try {
+            const response = await fetch('login.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            
+            // Hide loading spinner
+            document.getElementById('loadingOverlay').classList.remove('active');
+
+            if (result.success) {
+                // Show success message briefly then redirect
+                alert('Login successful! Redirecting...');
+                
+                // Redirect based on role
+                window.location.href = result.redirect;
+            } else {
+                alert(result.message || 'Login failed. Please try again.');
+            }
+
+        } catch (error) {
+            document.getElementById('loadingOverlay').classList.remove('active');
+            alert('Connection error. Please check your internet connection.');
+            console.error('Error:', error);
+        }
+    });
+</script>
 </body>
 </html>

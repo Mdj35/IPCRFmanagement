@@ -50,14 +50,17 @@
                         <i data-lucide="user" class="w-4 h-4"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-white truncate">Encoder User</p>
-                        <p class="text-xs truncate">Region VII</p>
+                        <p class="text-sm font-medium text-white truncate">{{ session('user')['name'] ?? 'User' }}</p>
+                        <p class="text-xs truncate">{{ session('user')['role'] ?? 'Role' }}</p>
                     </div>
                 </div>
-                <button class="w-full flex items-center gap-3 px-4 py-2 text-sm text-white-300 hover:text-white mt-2">
-                    <i data-lucide="log-out" class="w-4 h-4"></i>
-                    Sign Out
-                </button>
+                <form action="{{ route('logout') }}" method="POST" class="mt-2">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-white-300 hover:text-white hover:bg-white/10 rounded-lg transition-all">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        Sign Out
+                    </button>
+                </form>
             </div>
         </aside>
 

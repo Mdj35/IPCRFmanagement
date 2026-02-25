@@ -270,6 +270,131 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            animation: slideDown 0.3s ease;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+            color: #2d3748;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-body p {
+            margin: 10px 0;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .modal-body ul {
+            margin: 10px 0;
+            padding-left: 20px;
+            color: #666;
+        }
+
+        .modal-body li {
+            margin: 8px 0;
+        }
+
+        .modal.success .modal-header h2 {
+            color: #22863a;
+        }
+
+        .modal.success .modal-icon {
+            color: #22863a;
+        }
+
+        .modal.error .modal-header h2 {
+            color: #cb2431;
+        }
+
+        .modal.error .modal-icon {
+            color: #cb2431;
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-primary {
+            background-color: #1e3a5f;
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background-color: #2a4a73;
+            transform: translateY(-1px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -302,62 +427,163 @@
                     <p>Sign Up to your DSWD account to continue</p>
                 </div>
 
-                <form method="POST" action="{{ route('register.post') }}">
-                    @csrf
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="lastname">Lastname</label>
-                            <input type="text" id="lastname" name="lastname" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="firstname">Firstname</label>
-                            <input type="text" id="firstname" name="firstname" required>
-                        </div>
-                    </div>
+             <!-- Change form to not use Laravel routing -->
+<form id="registerForm">
+    <!-- Keep all your existing form fields exactly the same, just remove @csrf -->
+    
+    <div class="form-row">
+        <div class="form-group">
+            <label for="lastname">Lastname</label>
+            <input type="text" id="lastname" name="lastname" required>
+        </div>
+        <div class="form-group">
+            <label for="firstname">Firstname</label>
+            <input type="text" id="firstname" name="firstname" required>
+        </div>
+    </div>
 
-                    <div class="form-group">
-                        <label for="employee_id">Employee ID</label>
-                        <input type="text" id="employee_id" name="employee_id" required>
-                    </div>
+    <div class="form-group">
+        <label for="employee_id">Employee ID</label>
+        <input type="text" id="employee_id" name="employee_id" required>
+    </div>
 
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required>
-                    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+    </div>
 
-                    <div class="form-group">
-                        <label for="password_confirmation">Confirm Password</label>
-                        <input type="password" id="password_confirmation" name="password_confirmation" required>
-                    </div>
+    <div class="form-group">
+        <label for="password_confirmation">Confirm Password</label>
+        <input type="password" id="password_confirmation" name="password_confirmation" required>
+    </div>
 
-                    <div class="form-group">
-                        <label for="role">Role</label>
-                        <select id="role" name="role" required>
-                            <option value="" disabled selected>Select your role</option>
-                            <option value="admin">Administrator</option>
-                            <option value="staff">Staff</option>
-                            <option value="encoder">Encoder</option>
-                            <option value="viewer">Viewer</option>
-                        </select>
-                    </div>
+    <div class="form-group">
+        <label for="role">Role</label>
+        <select id="role" name="role" required>
+            <option value="" disabled selected>Select your role</option>
+            <option value="admin">Administrator</option>
+            <option value="staff">Staff</option>
+            <option value="encoder">Encoder</option>
+            <option value="viewer">Viewer</option>
+        </select>
+    </div>
 
-                    <button type="submit" class="btn-primary">Approve to Admin</button>
+    <button type="submit" class="btn-primary">Approve to Admin</button>
 
-                    <div class="form-footer">
-                        <p>You have an account? <a href="{{ route('login') }}">SIGN IN</a></p>
-                    </div>
-                </form>
+    <div class="form-footer">
+        <p>You have an account? <a href="/login">SIGN IN</a></p>
+    </div>
+</form>
             </div>
         </div>
     </div>
+
+    <!-- Modal for Success/Error Messages -->
+    <div id="responseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon" id="modalIcon">ℹ️</div>
+                <h2 id="modalTitle">Message</h2>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <p id="modalMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-primary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Show modal with message
+    function showModal(type, title, message) {
+        const modal = document.getElementById('responseModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalMessage = document.getElementById('modalMessage');
+
+        modalTitle.textContent = title;
+        modalMessage.innerHTML = message;
+
+        modal.classList.remove('success', 'error');
+        
+        if (type === 'success') {
+            modal.classList.add('success');
+            modalIcon.textContent = '✓';
+        } else if (type === 'error') {
+            modal.classList.add('error');
+            modalIcon.textContent = '✕';
+        }
+
+        modal.classList.add('show');
+    }
+
+    // Close modal
+    function closeModal() {
+        const modal = document.getElementById('responseModal');
+        modal.classList.remove('show');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('responseModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+
+    // Handle form submission with JavaScript
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Stop normal form submission
+        
+        // Get form data
+        const formData = {
+            lastname: document.getElementById('lastname').value.trim(),
+            firstname: document.getElementById('firstname').value.trim(),
+            employee_id: document.getElementById('employee_id').value.trim(),
+            password: document.getElementById('password').value,
+            password_confirmation: document.getElementById('password_confirmation').value,
+            role: document.getElementById('role').value
+        };
+
+        // Basic validation
+        if (!formData.lastname || !formData.firstname || !formData.employee_id || 
+            !formData.password || !formData.role) {
+            showModal('error', 'Validation Error', 'Please fill in all fields');
+            return;
+        }
+
+        if (formData.password !== formData.password_confirmation) {
+            showModal('error', 'Validation Error', 'Passwords do not match');
+            return;
+        }
+
+        try {
+            // Send data to PHP backend
+            const response = await fetch('register.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showModal('success', 'Registration Successful!', result.message);
+                // Clear form
+                document.getElementById('registerForm').reset();
+            } else {
+                showModal('error', 'Registration Failed', result.message);
+            }
+
+        } catch (error) {
+            showModal('error', 'Error', 'Could not connect to server. Please try again.');
+            console.error('Error:', error);
+        }
+    });
+</script>
 </body>
 </html>
 
-@if ($errors->any())
-    <div style="color: red; margin-bottom: 15px;">
-        @foreach ($errors->all() as $error)
-            <p>{{ $error }}</p>
-        @endforeach
-    </div>
-@endif
